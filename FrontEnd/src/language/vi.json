@@ -1,0 +1,87 @@
+{
+  "Login": {
+    "Login": "Đăng nhập",
+    "Sologan": "Quản lý chi phí, tối ưu nhân sự!",
+    "LoginSubtitle": "Nhập tên tài khoản và mật khẩu để đăng nhập!",
+    "LoginForAdmin": "Đăng nhập",
+    "Username": "Tên đăng nhập",
+    "Password": "Mật khẩu",
+    "PasswordPlaceholder": "Nhập mật khẩu...",
+    "Success": "Đăng nhập thành công",
+    "Fail": "Đăng nhập thất bại, vui lòng kiểm tra lại tài khoản / mật khẩu",
+    "MissingField": "Vui lòng điền đầy đủ tài khoản và mật khẩu",
+    "ADMIN": "Quản trị viên",
+    "EMPLOYEE": "Nhân viên",
+    "MANAGER": "Quản lý",
+    "FINANCIAL_MANAGER": "Quản lý tài chính",
+    "Role": "Đăng nhập dưới quyền:"
+  },
+  "Routes": {
+    "bills": "Hoá đơn",
+    "bills_history": "Lịch sử hoá đơn",
+    "EmployeeRoute": "Nhân viên",
+    "ManagerRoute": "Quản lý",
+    "FinancialManagerRoute": "Quản lý tài chính",
+    "AdminRoute": "Quản trị viên",
+    "home": "Trang chủ",
+    "pending_bills": "Hoá đơn chờ duyệt"
+  },
+  "Notification": {
+    "DefaultTitle": "Thông báo",
+    "DefaultCloseButton": "Đóng",
+    "DefaultSubmitButton": "Xác nhận"
+  },
+  "InputField": {
+    "DefaultSelectPlaceHolder": "Chọn...",
+    "DefaultSelectNoOptions": "Không có lựa chọn phù hợp",
+    "DefaultSelectSearchPlaceHolder": "Tìm kiếm...",
+    "DefaultTextPlaceHolder": "Nhập..."
+  },
+  "Table": {
+    "DefaultSearchPlaceHolder": "Tìm...",
+    "DefaultPageMessage": "Vui lòng nhập trang muốn đến",
+    "DefaultSizePerPage": "Hiển thị:",
+    "DefaultNoDataMessage": "Không có dữ liệu",
+    "DefaultNoDataValue": "Không có thông tin"
+  },
+  "Navbar": {
+    "Search": "Chat AI",
+    "Search2": "Hỏi AI...",
+    "Login": "Đang đăng nhập bằng",
+    "ViewInfo": "Xem thông tin",
+    "ChangePass": "Đổi mật khẩu",
+    "Logout": "Đăng xuất",
+    "LogoutMessage": "Xác nhận thoát phiên đăng nhập?",
+    "InfoTitle": "Thông tin tài khoản",
+    "FirstMessage": "## ⚠️ Lưu ý: **Đây chỉ là một ChatBot sử dụng API bên thứ 3.**\n\n🚫 *Không thể trả lời các câu hỏi liên quan đến dữ liệu của doanh nghiệp.*"
+  },
+  "NotFound": {
+    "Title": "404 - Lỗi",
+    "Subtitle": "Không tìm thấy trang yêu cầu",
+    "Goback": "Quay lại"
+  },
+  "LoggedIn": {
+    "Message": "Vui lòng đăng nhập để tiếp tục"
+  },
+  "BillsRoute": {
+    "amount": "Chi phí",
+    "type": "Loại hoá đơn",
+    "note": "Ghi chú lý do",
+    "INVOICE": "Hóa đơn",
+    "RECEIPT": "Biên lai",
+    "OTHER": "Khác",
+    "PENDING": "Đang chờ",
+    "APPROVED": "Đã duyệt",
+    "REJECTED": "Từ chối",
+    "Status": "Trạng thái",
+    "id": "ID hoá đơn",
+    "reason": "Lý do chấp nhận / từ chối",
+    "submit": "Xác nhận",
+    "action": "Chấp nhận / từ chối"
+  },
+  "TableCustomButton": {
+    "Add": "Thêm",
+    "Delete": "Xoá",
+    "Reload": "Tải lại"
+  }
+}

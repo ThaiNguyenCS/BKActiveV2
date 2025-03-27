@@ -48,5 +48,13 @@ public class AdminController {
                 .status(HttpStatus.OK)
                 .build();
     }
+    @PostMapping("createUser")
+    public ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest userCreationRequest) {
+        log.info("Creating Finance");
+        return ApiResponse.<UserResponse>builder()
+                .data(adminService.createByRoles(userCreationRequest,Roles.USER))
+                .status(HttpStatus.OK)
+                .build();
+    }
 
 }

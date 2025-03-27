@@ -1,0 +1,87 @@
+{
+  "Login": {
+    "Login": "Login",
+    "Sologan": "Manage expenses, optimize your workforce!",
+    "LoginSubtitle": "Enter your username and password to log in!",
+    "LoginForAdmin": "Login",
+    "Username": "Username",
+    "Password": "Password",
+    "PasswordPlaceholder": "Enter password...",
+    "Success": "Login successful",
+    "Fail": "Login failed, please check your account/password",
+    "MissingField": "Please fill in the username and password",
+    "ADMIN": "Administrator",
+    "EMPLOYEE": "Employee",
+    "MANAGER": "Manager",
+    "FINANCIAL_MANAGER": "Financial Manager",
+    "Role": "Login as:"
+  },
+  "Routes": {
+    "bills": "Bills",
+    "EmployeeRoute": "Employee",
+    "ManagerRoute": "Manager",
+    "FinancialManagerRoute": "Financial Manager",
+    "AdminRoute": "Admin",
+    "home": "Home",
+    "bills_history": "Bills History",
+    "pending_bills": "Pending Bills"
+  },
+  "Notification": {
+    "DefaultTitle": "Notification",
+    "DefaultCloseButton": "Close",
+    "DefaultSubmitButton": "Confirm"
+  },
+  "InputField": {
+    "DefaultSelectPlaceHolder": "Select...",
+    "DefaultSelectNoOptions": "No suitable options",
+    "DefaultSelectSearchPlaceHolder": "Search...",
+    "DefaultTextPlaceHolder": "Enter..."
+  },
+  "Table": {
+    "DefaultSearchPlaceHolder": "Search...",
+    "DefaultPageMessage": "Please enter the page number",
+    "DefaultSizePerPage": "Display:",
+    "DefaultNoDataMessage": "No data",
+    "DefaultNoDataValue": "No information"
+  },
+  "Navbar": {
+    "Search": "AI Chatbot",
+    "Search2": "Ask AI...",
+    "Login": "Logged in as",
+    "ViewInfo": "View info",
+    "ChangePass": "Change password",
+    "Logout": "Logout",
+    "LogoutMessage": "Confirm logout?",
+    "InfoTitle": "Account info",
+    "FirstMessage": "## ⚠️ Note: **This is just a ChatBot using a third-party API.**\n\n🚫 *Cannot answer questions related to business data.*"
+  },
+  "NotFound": {
+    "Title": "404 - Error",
+    "Subtitle": "Page not found",
+    "Goback": "Go back"
+  },
+  "LoggedIn": {
+    "Message": "Please log in to continue"
+  },
+  "BillsRoute": {
+    "amount": "Amount",
+    "type": "Bill Type",
+    "note": "Reason Note",
+    "INVOICE": "Invoice",
+    "RECEIPT": "Receipt",
+    "OTHER": "Other",
+    "PENDING": "Pending",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "Status": "Status",
+    "id": "ID",
+    "reason": " Reason for acceptance / rejection",
+    "submit": "Submit",
+    "action": "Approve / Reject"
+  },
+  "TableCustomButton": {
+    "Add": "Add",
+    "Delete": "Delete",
+    "Reload": "Reload"
+  }
+}

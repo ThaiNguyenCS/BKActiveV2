@@ -24,7 +24,6 @@ public interface ExpenseRequestRepository extends JpaRepository<Record, String>,
             Predicate predicate = criteriaBuilder.conjunction();
 
             if (process != null) {
-                System.out.println(process.toString()); // Safe since we check for null
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("process"), process));
             }
 

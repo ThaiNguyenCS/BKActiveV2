@@ -1,0 +1,1 @@
+declare type RolesType = "ADMIN" | "EMPLOYEE" | "MANAGER" | "FINANCIAL_MANAGER";

@@ -1,0 +1,57 @@
+{
+  "extends": [
+    "next/core-web-vitals", // Mở rộng các quy tắc ESLint từ Next.js liên quan đến hiệu suất web
+    "next/typescript" // Mở rộng các quy tắc ESLint cho TypeScript trong Next.js
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off", // Tắt quy tắc yêu cầu React phải có trong phạm vi JSX
+    "react/prop-types": "off", // Tắt kiểm tra PropTypes (nếu bạn sử dụng TypeScript, không cần PropTypes)
+    "no-lonely-if": 1, // Cảnh báo nếu có câu lệnh if cô đơn
+    "no-trailing-spaces": 1, // Cảnh báo về khoảng trắng thừa ở cuối dòng
+    "no-multi-spaces": 1, // Cảnh báo về việc sử dụng nhiều khoảng trắng
+    "no-multiple-empty-lines": 1, // Cảnh báo về việc sử dụng nhiều dòng trống liên tiếp
+    "object-curly-spacing": [
+      1,
+      "always" // Cảnh báo yêu cầu có khoảng trắng trong các dấu ngoặc nhọn của đối tượng
+    ],
+    "array-bracket-spacing": 1, // Cảnh báo yêu cầu có khoảng trắng trong dấu ngoặc vuông của mảng
+    "no-unexpected-multiline": "warn", // Cảnh báo về các dòng đa dòng không mong muốn
+    "keyword-spacing": 1, // Cảnh báo yêu cầu có khoảng trắng trước và sau các từ khóa
+    "comma-dangle": [
+      "error", // Hoặc "warn" nếu bạn muốn cảnh báo thay vì lỗi
+      {
+        "arrays": "always-multiline", // Luôn yêu cầu dấu phẩy cho mảng nhiều dòng
+        "objects": "always-multiline", // Luôn yêu cầu dấu phẩy cho đối tượng nhiều dòng
+        "imports": "never", // Không yêu cầu dấu phẩy cho câu lệnh import
+        "exports": "never", // Không yêu cầu dấu phẩy cho câu lệnh export
+        "functions": "never" // Không yêu cầu dấu phẩy cho tham số hàm
+      }
+    ], // Cảnh báo yêu cầu có dấu phẩy ở cuối cho các đối tượng và mảng
+    "comma-spacing": 1, // Cảnh báo yêu cầu có khoảng trắng sau dấu phẩy
+    "arrow-spacing": 1, // Cảnh báo yêu cầu có khoảng trắng trước và sau dấu mũi tên
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_" // Cảnh báo về biến không sử dụng, nhưng bỏ qua các đối số bắt đầu bằng dấu gạch dưới
+      }
+    ],
+    "eqeqeq": [
+      "error",
+      "always" // Bắt buộc sử dụng toán tử so sánh nghiêm ngặt (===, !==)
+    ],
+    "curly": [
+      "error",
+      "all" // Bắt buộc sử dụng dấu ngoặc nhọn cho tất cả các khối điều kiện
+    ],
+    "semi": [
+      "error",
+      "always" // Bắt buộc sử dụng dấu chấm phẩy ở cuối dòng
+    ],
+    "linebreak-style": "off", // Tắt kiểm tra kiểu ngắt dòng
+    "no-console": "warn", // Cảnh báo về việc sử dụng console.log
+    "eol-last": [
+      "error",
+      "never"
+    ] // Không cho phép dòng trống cuối file
+  }
+}

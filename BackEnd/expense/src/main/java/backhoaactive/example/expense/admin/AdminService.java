@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,12 +30,14 @@ public class AdminService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AdminService(UserMapper userMapper, UserRepository userRepository, DepartmentRepository departmentRepository) {
             this.userMapper = userMapper;
             this.userRepository = userRepository;
             this.departmentRepository = departmentRepository;
+            this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public UserResponse createByRoles(UserCreationRequest userCreationRequest, Roles role) {
@@ -45,10 +49,12 @@ public class AdminService {
         user.setRole(role);
         Department department = departmentRepository.findById(userCreationRequest.getDepartmentId())
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_DEPARTMENT_ID));
-
+        user.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
         user.setDepartment(department);
         user.setCreatedAt(LocalDate.now());
         user.setUpdatedAt(LocalDate.now());
-        return userMapper.toUserResponse(userRepository.save(user));
+        UserResponse userResponse= userMapper.toUserResponse(userRepository.save(user));
+        log.info(userResponse.toString());
+        return userResponse;
     }
 }
