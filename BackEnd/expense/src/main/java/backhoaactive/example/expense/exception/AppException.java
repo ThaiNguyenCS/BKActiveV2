@@ -6,6 +6,13 @@ public class AppException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public AppException(ErrorCode errorCode, String message) {
+        super(message);
+        System.out.print("ad");
+
+        this.errorCode = errorCode;
+    }
+
     private ErrorCode errorCode;
 
     public ErrorCode getErrorCode() {

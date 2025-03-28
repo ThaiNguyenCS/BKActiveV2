@@ -3,6 +3,7 @@ package backhoaactive.example.expense.exception;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
+        apiResponse.setMessage(e.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
@@ -40,32 +41,28 @@ public class GlobalExceptionHandler {
                 .body(apiResponse);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+
+        ApiResponse apiResponse = new ApiResponse();
+        ErrorCode errorCode = ErrorCode.MISSING_REQUEST_BODY;
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(ex.getMessage());
+        return ResponseEntity.status(errorCode.getHttpStatusCode())
+                .body(apiResponse);
+
+    }
+
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<ApiResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        String enumKey = e.getFieldError().getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.INVALID_KEY;
-        Map<String, Object> attributeMap = null;
-        try {
-            errorCode = ErrorCode.valueOf(enumKey);
-
-            var constraintViolations =
-                    e.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
-
-            attributeMap = constraintViolations.getConstraintDescriptor().getAttributes();
-
-            log.info(attributeMap.toString());
-
-        } catch (IllegalArgumentException ex) {
-
-        }
+        log.info("methodArgumentNotValidExceptionHandler");
+        String message = e.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.MISSING_FIELD;
         ApiResponse apiResponse = new ApiResponse();
-
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(
-                Objects.nonNull(attributeMap)
-                        ? mapAttribute(errorCode.getMessage(), attributeMap)
-                        : errorCode.getMessage());
+                message);
 
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }

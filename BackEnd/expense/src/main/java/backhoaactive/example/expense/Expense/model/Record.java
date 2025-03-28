@@ -5,6 +5,7 @@ import backhoaactive.example.expense.enums.TypeExpense;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,15 +27,28 @@ public class Record {
     String managerId;
     String financialId;
 
+
     LocalDateTime updatedAt;
     LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     Process process;
 
+    @PrePersist
+    public void setDefaultProcess() {
+        if (process == null) {
+            process = Process.Waiting;  // Default value
+        }
+    }
+
     @Enumerated(EnumType.STRING)
     TypeExpense typeExpense;
 
     Double amount;
+
+    @PreUpdate
+    public void updateTimestamp() {
+        updatedAt = LocalDateTime.now();  // Update on modification
+    }
 
 }

@@ -3,6 +3,7 @@ package backhoaactive.example.expense.Expense.controller;
 import backhoaactive.example.expense.Expense.dto.request.CreateRequestDTO;
 import backhoaactive.example.expense.Expense.dto.request.ExpenseRequestDTO;
 import backhoaactive.example.expense.Expense.dto.request.UpdateRequestDTO;
+import backhoaactive.example.expense.Expense.dto.request.UpdateRequestStatusDTO;
 import backhoaactive.example.expense.Expense.dto.response.ExpensesResponseDTO;
 import backhoaactive.example.expense.Expense.model.Record;
 import backhoaactive.example.expense.Expense.service.ExpenseService;
@@ -11,76 +12,60 @@ import backhoaactive.example.expense.User.repository.UserRepository;
 import backhoaactive.example.expense.User.services.UserService;
 import backhoaactive.example.expense.department.DepartmentRepository;
 import backhoaactive.example.expense.department.entity.Department;
+import backhoaactive.example.expense.enums.Process;
 import backhoaactive.example.expense.enums.Roles;
 import backhoaactive.example.expense.enums.TypeExpense;
 import backhoaactive.example.expense.exception.ApiResponse;
 import backhoaactive.example.expense.exception.AppException;
 import backhoaactive.example.expense.exception.ErrorCode;
-import com.nimbusds.jose.shaded.gson.JsonElement;
-import com.nimbusds.jwt.SignedJWT;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/expenses")
 public class ExpenseController {
+    private static final Logger log = LoggerFactory.getLogger(ExpenseController.class);
     private final ExpenseService service;
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final DepartmentRepository departmentRepository;
 
     @GetMapping
-    public ApiResponse<ExpensesResponseDTO> getAllRequestForUser(ExpenseRequestDTO dto) {
+    public ApiResponse<ExpensesResponseDTO> getAllRequestForUser(@RequestParam(defaultValue = "createdAt") String sortBy,
+                                                                 @RequestParam(defaultValue = "desc") String direction,
+                                                                 @ModelAttribute ExpenseRequestDTO dto,
+                                                                 @PageableDefault(size = 20) Pageable pageable) {
+        log.info("getAllRequestForUser");
+        log.info(dto.toString());
         SecurityContext context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userService.getUserByUserName(name);
-        System.out.println("Username + " + user.getUsername() + " " + user.getId());
-
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending(); // if value is not desc, sort by ascending
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort); // create pageable object
         List<Record> records = null;
         Page<Record> pageRecord = null;
-        Roles userRole = user.getRole();
-        // chia role
-        if (userRole == Roles.USER) {
-            // lấy của chính nó
-            dto.setUserId(user.getId()); // add employeeId
-            pageRecord = this.service.getExpenses(dto);
-            records = pageRecord.getContent();
-        } else if (userRole == Roles.FINANCE_MANAGER) {
-            // lấy hết
-            pageRecord = this.service.getExpenses(dto);
-            records = pageRecord.getContent();
 
-        } else if (userRole == Roles.MANAGER) {
-            // lấy của deparment của nó
-            Department department = user.getDepartment();
-            // tìm tất cả employee thuộc department đó
-            List<User> users = userRepository.findAllByDepartment(department);
-            List<String> ids = users.stream()
-                    .map(User::getId)  // Correct method reference syntax
-                    .collect(Collectors.toList());
-            // tìm tất cả request thuộc về các employee kia
-            System.out.println("ids" + ids.size());
-            records = this.service.findAllExpenseInUserIds(ids);
-            pageRecord = this.service.getExpenses(dto);
-        } else {
-            throw new AppException(ErrorCode.NOT_ALLOWED);
-        }
-
+        pageRecord = this.service.getExpenses(user, dto, sortedPageable);
+        records = pageRecord.getContent();
         ExpensesResponseDTO responseDTO = ExpensesResponseDTO.builder()
                 .expenses(records)
-//                .total(pageRecord.getTotalPages())
-//                .page(pageRecord.getNumber() + 1)
-//                .limit(pageRecord.getSize())
+                .total(pageRecord.getTotalPages())
+                .page(pageRecord.getNumber() + 1)
+                .limit(pageRecord.getSize())
                 .build();
         ApiResponse<ExpensesResponseDTO> response = ApiResponse.<ExpensesResponseDTO>builder()
                 .code(200)
@@ -91,8 +76,8 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ApiResponse<Record> createExpenseRequest(@RequestBody CreateRequestDTO dto) {
-
+    public ApiResponse<Record> createExpenseRequest(@Valid @RequestBody CreateRequestDTO dto) {
+        log.info("createExpenseRequest");
         SecurityContext context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userService.getUserByUserName(name);
@@ -100,14 +85,14 @@ public class ExpenseController {
 
         if (user.getRole() == Roles.USER) {
             Record savedRecord = Record.builder()
-                    .typeExpense(TypeExpense.valueOf(dto.getTypeExpense()))
+                    .typeExpense(dto.getTypeExpense())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .amount(dto.getAmount())
                     .employeeId(user.getId())
                     .build();
             this.service.createExpenseRequest(savedRecord);
-            System.out.println("here");
+//            System.out.println("here");
 
             ApiResponse<Record> response = ApiResponse.<Record>builder()
                     .code(201)
@@ -126,13 +111,58 @@ public class ExpenseController {
     }
 
     @PatchMapping("/{requestId}")
-    public ApiResponse<String> createExpenseRequest(@RequestHeader("Authorization") String authHeader, @RequestBody UpdateRequestDTO dto) {
-        String token = authHeader.replace("Bearer ", "");
-        System.out.print("token: " + token);
-//        this.service.updateExpenseRequest();
+    public ApiResponse<Record> updateExpenseRequest(@RequestBody UpdateRequestDTO dto, @PathVariable("requestId") String requestId) {
+        log.info("updateExpenseRequest");
+        log.info(dto.toString());
+        SecurityContext context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userService.getUserByUserName(name);
+        TypeExpense updatedType = null;
+        if (dto.getTypeExpense() != null) {
+            try {
+                updatedType = TypeExpense.valueOf(dto.getTypeExpense());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_VALUE, e.getMessage());
+            }
+        }
 
-        ApiResponse<String> response = ApiResponse.<String>builder()
-                .result("ahihi") // Assuming `result` is a valid builder method
+        Record updatedRecord = Record.builder()
+                .id(requestId)
+                .typeExpense(updatedType)
+                .amount(dto.getAmount())
+                .build();
+        Record newRecord = this.service.updateExpenseRequest(user, updatedRecord);
+        ApiResponse<Record> response = ApiResponse.<Record>builder()
+                .message("Update request expense successfully")
+                .code(200)
+                .result(newRecord) // Assuming `result` is a valid builder method
+                .build();
+        return response;
+    }
+
+    @PatchMapping("/{requestId}/status")
+    public ApiResponse<Record> updateExpenseStatusRequest(@RequestBody UpdateRequestStatusDTO dto, @PathVariable("requestId") String requestId) {
+        log.info("updateExpenseStatusRequest");
+        log.info(dto.toString());
+        SecurityContext context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userService.getUserByUserName(name);
+        Process updatedProcess;
+        try {
+            updatedProcess = Process.valueOf(dto.getStatus());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_VALUE, e.getMessage());
+        }
+
+        Record updatedRecord = Record.builder()
+                .process(updatedProcess)
+                .id(requestId)
+                .build();
+        Record newRecord = this.service.updateExpenseStatusRequest(user, updatedRecord);
+        ApiResponse<Record> response = ApiResponse.<Record>builder()
+                .message("Update request expense status successfully")
+                .code(200)
+                .result(newRecord) // Assuming `result` is a valid builder method
                 .build();
         return response;
     }

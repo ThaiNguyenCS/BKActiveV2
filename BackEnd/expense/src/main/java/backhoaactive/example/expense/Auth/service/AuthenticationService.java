@@ -69,7 +69,6 @@ public class AuthenticationService {
         if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED_EXCEPTION);
         }
-
         return AuthenticationResponse.builder()
                 .success(true)
                 .token(generateToken(user))
