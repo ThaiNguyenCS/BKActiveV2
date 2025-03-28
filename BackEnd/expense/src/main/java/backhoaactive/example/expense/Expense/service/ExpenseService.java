@@ -70,6 +70,7 @@ public class ExpenseService {
     private Record updateExpenseRequestForManager(Record oldRecord, Record updatedRecord) {
         if (oldRecord.getProcess().canManagerUpdate(updatedRecord.getProcess())) {
             oldRecord.setProcess(updatedRecord.getProcess());
+            oldRecord.setManagerId(updatedRecord.getManagerId());
             return this.repository.save(oldRecord);
         } else {
             throw new AppException(ErrorCode.NOT_ALLOWED);
@@ -79,6 +80,7 @@ public class ExpenseService {
     private Record updateExpenseRequestForFinancial(Record oldRecord, Record updatedRecord) {
         if (oldRecord.getProcess().canFinancialUpdate(updatedRecord.getProcess())) {
             oldRecord.setProcess(updatedRecord.getProcess());
+            oldRecord.setFinancialId(updatedRecord.getFinancialId());
             return this.repository.save(oldRecord);
         } else {
             throw new AppException(ErrorCode.NOT_ALLOWED);
